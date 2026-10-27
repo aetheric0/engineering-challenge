@@ -1,2 +1,10 @@
+# Core Validation & Data Schemas
 pydantic>=2.13.1
+
+# Statistical Vectorization & Semantic Similarity (TF-IDF + Cosine Similarity)
+scikit-learn>=1.3.2
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Testing Suite
 pytest==8.0.0
