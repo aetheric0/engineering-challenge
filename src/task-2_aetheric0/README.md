@@ -47,6 +47,7 @@ A high-performance, deterministic-probabilistic claim validation and telemetry e
 In `validator.py`, our heuristic inference detector looks for specific markers:
 ```python
 inference_keywords = ["project", "expect", "likely", "would", "will", "predict", "probable"]
+```
 
 ### Why did we deliberately exclude words like "plausible" or "possible"?
 
