@@ -1,0 +1,51 @@
+{
+    "sources": [
+        {
+            "source_id": "s1",
+            "content": "The regulation was published on 1 June. Cloud migration costs increased by 10%.",
+            "locator": "para-1"
+        },
+        {
+            "source_id": "s2",
+            "content": "Projections indicate significant upward pressure on cloud spending.",
+            "locator": "para-2"
+        },
+        {
+            "source_id": "s3", "content": "Costs increased by 40% this year.",
+            "locator": "para-3"
+        }
+    ],
+    "claims": [
+        {
+            "claim_id": "c1", 
+            "text": "The regulation was published on 1 June.",
+            "referenced_sources": ["s1"]
+        },
+        {
+            "claim_id": "c2",
+            "text": "Cloud migration costs increased by 30%.", 
+            "referenced_sources": ["s1"]
+        },
+        {
+            "claim_id": "c3",
+            "text": "The regulation applies globally.",
+            "referenced_sources": ["missing_source"]
+        },
+        {
+            "claim_id": "c4",
+            "text": "Costs increased this year", 
+            "referenced_sources": ["s1", "s3"]
+        },
+        {
+            "claim_id": "c5",
+            "text": "This signficantly increase cloud migration costs.",
+            "referenced_sources": ["s2"]
+        },
+        {
+            "claim_id": "c6",
+            "text": "Cloud costs are rising.",
+            "referenced_sources": ["s2"]
+        }
+
+    ]
+}

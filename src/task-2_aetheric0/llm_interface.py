@@ -27,7 +27,7 @@ class MockLLMValidator(BaseLLMValidator):
     An offline mock for tests and local execution.
     Simulates semantic understanding without hitting external APIs.
     """
-    def __init__(self, custom_rules: list[tuple[str, str, ValidationStatus, str]] | None):
+    def __init__(self, custom_rules: list[tuple[str, str, ValidationStatus, str]] | None = None):
         # Format: (evidence_substring, claim_substring, status, reason)
         self.custom_rules = custom_rules or []
 
@@ -41,7 +41,7 @@ class MockLLMValidator(BaseLLMValidator):
                 return LLMResponse(status=status, reason=reason)
 
         # Default fallback
-        if "upward pressure" in evidence_lower and "increase costs" in claim_lower:
+        if "upward pressure" in evidence_lower and ("increase costs" in claim_lower or "costs are rising" in claim_lower):
             return LLMResponse(
                 status=ValidationStatus.SUPPORTED,
                 reason="[Mock LLM] Semantic match: 'upward pressure' implies 'increase costs'"

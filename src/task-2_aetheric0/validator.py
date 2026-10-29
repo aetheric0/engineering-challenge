@@ -1,9 +1,9 @@
 import re
 
-from sklearn.feature_extraction.text import TfidVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from llm_interface import BaseLLMValidator
+from llm_interface import BaseLLMValidator, ValidationStatus
 from models import Claim, EvidenceMatch, Source, ValidationResult
 
 
@@ -12,7 +12,7 @@ def extract_numbers(text: str) -> list[str]:
 
 def is_inference(claim_text: str) -> bool:
     # Simple heuristic for the baseline: future tense or speculative words
-    inference_keywords = ["project", "expect", "likely", "would", "will", "predict", "probable", "plausible"]
+    inference_keywords = ["project", "expect", "likely", "would", "will", "predict", "probable"]
     return any(keyword in claim_text.lower() for keyword in inference_keywords)
 
 def calculate_semantic_similarity(claim_text: str, source_text: str) -> float:
@@ -23,7 +23,7 @@ def calculate_semantic_similarity(claim_text: str, source_text: str) -> float:
         return 0.0
     try:
         corpus = [claim_text, source_text]
-        vectorizer = TfidVectorizer(stop_words='english')
+        vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform(corpus)
         similarity_score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
         return float(similarity_score)
@@ -92,21 +92,21 @@ def validate_claims(
         classification = "inference" if is_inference(claim.text) else "fact"
 
         if contradictions:
-            status = "uncertain" if len(valid_sources) > 1 else "unsupported"
+            status = ValidationStatus.UNCERTAIN if len(valid_sources) > 1 else ValidationStatus.UNSUPPORTED
             reason = "Conflicting or missing numerical evidence prevents a definitive answer."
         elif classification == "inference":
             # if it's an inference, even if related, it's not a factual support
-            status = "unsupported"
+            status = ValidationStatus.UNSUPPORTED
             reason = "The claim is an inference/speculation and is not directly stated as fact in the evidence."
         elif unsupported_numbers:
-            status = "unsupported"
+            status = ValidationStatus.UNSUPPORTED
             reason = "The claim contains numerical elements not found in the source."
         else:
             # 5. Use TF-IDF Cosine Similarity
             similarity_score = calculate_semantic_similarity(claim.text, all_source_text)
 
             if similarity_score > 0.3:
-                status = "supported"
+                status = ValidationStatus.SUPPORTED
                 reason = f"TF-IDF cosine similarity ({similarity_score:.2f}) indicates direct support from the source."
             else:
                 # Fallback to optional LLM if provided
@@ -115,7 +115,7 @@ def validate_claims(
                     status= llm_res.status
                     reason = llm_res.reason
                 else:
-                    status = "unsupported"
+                    status = ValidationStatus.UNSUPPORTED
                     reason = "The evidence does not provide adequate support for the claim."
 
         results.append(ValidationResult(
