@@ -61,6 +61,7 @@ inference_keywords = ["project", "expect", "likely", "would", "will", "predict",
 - *Why*: Hardcoding mock responses inside the class body limits test coverage. Allowing developers to inject custom test rules (evidence_sub, claim_sub, status, reason) enables comprehensive unit testing of edge cases without writing redundant mock classes.
 
 ## Project Structure
+```text
 claim_validator_engine/
 ├── models.py             # Pydantic data schemas & Enums
 ├── llm_interface.py      # Abstract Base Class, Mock LLM, & Real API Stub
@@ -70,6 +71,7 @@ claim_validator_engine/
 │   └── data.json         # Test data sources and claims
 └── tests/
     └── test_validator.py # Comprehensive pytest test suite
+```
 
 ## Quick Start & Installation
 *Prerequisites*
